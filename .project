@@ -35,15 +35,5 @@
 			<type>1</type>
 			<locationURI>PROJECT_LOC/src/assignment2/TreeList.java</locationURI>
 		</link>
-		<link>
-			<name>src/UserInterface.java</name>
-			<type>1</type>
-			<locationURI>PROJECT_LOC/src/assignment2/UserInterface.java</locationURI>
-		</link>
-		<link>
-			<name>src/UserView.java</name>
-			<type>1</type>
-			<locationURI>PROJECT_LOC/src/assignment2/UserView.java</locationURI>
-		</link>
 	</linkedResources>
 </projectDescription>
