@@ -2,6 +2,7 @@
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,6 +16,7 @@ import javax.swing.JList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+
 import javax.swing.JScrollBar;
 import javax.swing.JSpinner;
 
@@ -26,9 +28,6 @@ public class UserView extends JFrame {
 	private JButton btnNewButton, btnNewButton_1;
 	private JList list, list_1;
 	private JLabel jl;
-	private ArrayList al;
-	private JList list_3;
-	private JList list_4;
 
 	/**
 	 * Create the frame.
