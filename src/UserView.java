@@ -12,10 +12,12 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.ListModel;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JScrollBar;
 import javax.swing.JSpinner;
@@ -28,12 +30,14 @@ public class UserView extends JFrame {
 	private JButton btnNewButton, btnNewButton_1;
 	private JList list, list_1;
 	private JLabel jl;
+	private List followers = new ArrayList();
+	private List tweets = new ArrayList();
+	private String user;
 
 	/**
 	 * Create the frame.
 	 */
-	public UserView() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public UserView(String user) {
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -82,7 +86,8 @@ public class UserView extends JFrame {
 			DefaultListModel DLM = new DefaultListModel();
 			public void actionPerformed(ActionEvent arg0) {
 				String input = textField_1.getText();
-				DLM.addElement(input);
+				tweets.add(input);
+				DLM.addElement(tweets.get(tweets.size() - 1));
 				list_1.setModel(DLM);
 			}
 		});
@@ -95,7 +100,8 @@ public class UserView extends JFrame {
 			DefaultListModel DLM = new DefaultListModel();
 			public void actionPerformed(ActionEvent arg0) {
 				String input = textField.getText();
-				DLM.addElement(input);
+				followers.add(input);
+				DLM.addElement(followers.get(followers.size() - 1));
 				list.setModel(DLM);
 			}
 		});
