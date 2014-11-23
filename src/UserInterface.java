@@ -35,6 +35,7 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 	private Users stu1, stu2, stu3, stu4, stu8, stu9, stu10;
 	private Users john, bob, steve, oostu, ppstu2;
 	private JLabel cost;
+	private String user;
 	private static UserInterface instance = null;
 
 	/**
@@ -191,11 +192,9 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 
 	private JButton addGroup() {
 		JButton button = new JButton("Button - Add Group");
-
 		return button;
 	}
-
-	public String string;
+	
 	private JButton goToUI() {
 		JButton btnButtonOpen = new JButton("Button - Open User View");
 		// iterates through the tree to find name
@@ -204,7 +203,7 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 				TreePath[] paths = evt.getPaths();
 				for (int i = 0; i < paths.length; i++) {
 					if(evt.isAddedPath(i)){
-						string = paths[i].getLastPathComponent().toString();
+						user = paths[i].getLastPathComponent().toString();
 						break;
 					} else {
 						break;
@@ -217,8 +216,7 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							System.out.println(string);
-							UserView uv = new UserView("gay bitch");
+							UserView uv = new UserView(user);
 							uv.setVisible(true);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -227,8 +225,6 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 				});
 			}
 		});
-
-
 		return btnButtonOpen;
 	}
 
