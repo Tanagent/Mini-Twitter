@@ -1,9 +1,6 @@
 import java.util.Enumeration;
 import java.util.Vector;
 
-/**
- * 
- */
 
 /**
  * @author Brian Tan
@@ -41,6 +38,10 @@ public class Users {
 		return subordinates.elements();
 	}
 	
+	/**
+	 * @param s - the user ID.
+	 * @return -  the child of the user.
+	 */
 	public Users getChild(String s) {
 		Users users = null;
 		if(getName().equals(s))
@@ -63,12 +64,19 @@ public class Users {
 		}
 	}
 	
+	/**
+	 * @param u - adds the user into the vector
+	 * @return returns whether the operation was successful or not.
+	 */
 	public boolean add(Users u) {
 		if(!isLeaf)
 			subordinates.addElement(u);
 		return isLeaf; // false if unsuccessful
 	}
 	
+	/**
+	 * @param u - removes the user from the vector.
+	 */
 	public void remove(Users u) {
 		if(!isLeaf)
 			subordinates.removeElement(u);

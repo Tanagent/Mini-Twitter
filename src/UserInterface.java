@@ -36,6 +36,7 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 	private Users john, bob, steve, oostu, ppstu2;
 	private JLabel cost;
 	private String user;
+	private int totalUser;
 	private static UserInterface instance = null;
 
 	/**
@@ -55,7 +56,7 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 	}
 	
 	/**
-	 * Create the frame.
+	 * Create the frame for UserInterface.
 	 */
 	private UserInterface() {
 		setResizable(false);
@@ -77,19 +78,15 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 		button.setBounds(366, 56, 160, 52);
 		contentPane.add(button);
 		
-		JButton btnButtonShow_2 = new JButton("Button - Show Positive Percentage");
+		JButton btnButtonShow_2 = new JButton("Show Positive Percentage");
 		btnButtonShow_2.setBounds(366, 259, 160, 58);
 		contentPane.add(btnButtonShow_2);
 		
-		JButton btnButtonShow_1 = new JButton("Button - Show Messages Total");
+		JButton btnButtonShow_1 = new JButton("Show Messages Total");
 		btnButtonShow_1.setBounds(205, 259, 160, 58);
 		contentPane.add(btnButtonShow_1);
 		
-		JButton btnButtonShow = new JButton("Button - Show Group Total");
-		btnButtonShow.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
+		JButton btnButtonShow = groupTotal();
 		btnButtonShow.setBounds(366, 210, 160, 46);
 		contentPane.add(btnButtonShow);
 		
@@ -102,42 +99,75 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 		contentPane.add(btnButtonOpen);
 		
 		txtTextareaUser = new JTextField();
-		txtTextareaUser.setText("TextArea - User Id");
+		txtTextareaUser.setText("User Id");
 		txtTextareaUser.setBounds(205, 5, 160, 52);
 		contentPane.add(txtTextareaUser);
 		txtTextareaUser.setColumns(10);
 		
 		txtTextareaGroup = new JTextField();
-		txtTextareaGroup.setText("TextArea - Group Id");
+		txtTextareaGroup.setText("Group Id");
 		txtTextareaGroup.setColumns(10);
 		txtTextareaGroup.setBounds(205, 58, 160, 48);
 		contentPane.add(txtTextareaGroup);
 	}
 	
+	/**
+	 * The implementation of the lazy instantiation.
+	 * @return the instance of UserInterface.
+	 */
 	public static UserInterface getInstance() {
 		if(instance == null)
 			instance = new UserInterface();
 		return instance;
 	}
 	
+	/**
+	 * @return another window displaying the total number of groups in JTree when pressed.
+	 */
+	private JButton groupTotal() {
+		JButton btnButtonShow = new JButton("Show Group Total");
+		btnButtonShow.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				class Display extends JFrame {
+					private JLabel item;
+					public Display() {
+						super("Total Group");
+						setLayout(new FlowLayout());
+						item = new JLabel(Integer.toString(3));
+						add(item);
+					}
+				}
+				Display display = new Display();
+				display.setSize(100, 100);
+				display.setVisible(true);
+			}
+		});
+		return btnButtonShow;
+	}
+	
+	/**
+	 * builds JTree.
+	 * @param topDog - the root of Jtree. 
+	 */
 	private void setTree(Users topDog) {
-		
-//		leafCount = root.getLeafCount();
-//		tree = new JTree(root);
 		DefaultMutableTreeNode troot;
 		troot = new DefaultMutableTreeNode(topDog.getName());
 		tree = new JTree(troot);
 		tree.addTreeSelectionListener((TreeSelectionListener) this);
 		addNodes(troot, topDog);
+		totalUser = troot.getLeafCount();
 		
 		tree.setBounds(5, 5, 190, 312);
 		contentPane.add(tree);
-
 	}
 	
+	/**
+	 * adds nodes to the JTree if needed.
+	 * @param pnode - the root node of JTree
+	 * @param user - the root of JTree
+	 */
 	private void addNodes(DefaultMutableTreeNode pnode, Users user) {
 		DefaultMutableTreeNode node;
-		
 		Enumeration e = user.elements();
 		while (e.hasMoreElements()) {
 			Users newUser = (Users) e.nextElement();
@@ -147,6 +177,9 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 		}
 	}
 	
+	/**
+	 * loads the users into the tree.
+	 */
 	private void makeUsers() {
 	    root = new Users("Root");
 	    root.add(john = new Users("John"));
@@ -169,8 +202,11 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 		root.add(ppstu2 = new Users("ppstu2"));
 	}
 	
+	/**
+	 * @return another window that outputs the total number of user
+	 */
 	private JButton totalUser() {
-		JButton btnButtonShowUser = new JButton("Button- Show User Total");
+		JButton btnButtonShowUser = new JButton("Show User Total");
 		btnButtonShowUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				class Display extends JFrame {
@@ -178,25 +214,31 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 					public Display() {
 						super("Total User");
 						setLayout(new FlowLayout());
-						item = new JLabel("this is a sentence");
+						item = new JLabel(Integer.toString(totalUser));
 						add(item);
 					}
 				}
 				Display display = new Display();
-				display.setSize(275, 180);
+				display.setSize(100, 100);
 				display.setVisible(true);
 			}
 		});
 		return btnButtonShowUser;
 	}
 
+	/**
+	 * @return allows input another group to be added to the tree.
+	 */
 	private JButton addGroup() {
-		JButton button = new JButton("Button - Add Group");
+		JButton button = new JButton("Add Group");
 		return button;
 	}
 	
+	/**
+	 * @return a button that opens up a view for the selected User.
+	 */
 	private JButton goToUI() {
-		JButton btnButtonOpen = new JButton("Button - Open User View");
+		JButton btnButtonOpen = new JButton("Open User View");
 		// iterates through the tree to find name
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent evt) {
@@ -211,6 +253,8 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 				}
 			}
 		});
+		
+		//opens up the window to the selected user.
 		btnButtonOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				EventQueue.invokeLater(new Runnable() {
@@ -228,11 +272,14 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 		return btnButtonOpen;
 	}
 
+	/**
+	 * @return adds user to JTree.
+	 */
 	private JButton addUser() {
-		JButton btnNewButton = new JButton("Button - Add User");
+		JButton btnNewButton = new JButton("Add User");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {		
-
+				// gets info from the text field and adds it onto the list.
 			}
 		});
 		return btnNewButton;
@@ -241,7 +288,17 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 	@Override
 	public void valueChanged(TreeSelectionEvent arg0) {
 		// TODO Auto-generated method stub
-		
+	}
+	
+	/**
+	 * uses the observer pattern to it's followers.
+	 */
+	public void observer() {
+		final EventSource eventSource = new EventSource();
+		final ResponseHandler responseHandler = new ResponseHandler();
+		eventSource.addObserver(responseHandler);
+		Thread thread = new Thread(eventSource);
+		thread.start();
 	}
 }
 

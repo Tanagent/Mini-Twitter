@@ -16,8 +16,11 @@ import javax.swing.ListModel;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JScrollBar;
 import javax.swing.JSpinner;
@@ -33,11 +36,14 @@ public class UserView extends JFrame {
 	private List followers = new ArrayList();
 	private List tweets = new ArrayList();
 	private String user;
+	private DefaultListModel DLM = new DefaultListModel();
 
 	/**
-	 * Create the frame.
+	 * Create the frame for UserView.
 	 */
 	public UserView(String user) {
+		super(user);
+		this.user = user;
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -76,10 +82,20 @@ public class UserView extends JFrame {
 		btnNewButton_1 = submitTweet();
 		btnNewButton_1.setBounds(319, 145, 105, 35);
 		contentPane.add(btnNewButton_1);
-		
-
+	}
+	
+	public void setFollowers(List followers) {
+		this.followers = followers;
+	}
+	
+	public List getFollowers() {
+		return followers;
 	}
 
+	/**
+	 * takes in the tweet that the user enters
+	 * @return displays the tweet on the list once the button is pressed.
+	 */
 	private JButton submitTweet() {
 		btnNewButton_1 = new JButton("Submit");
 		btnNewButton_1.addActionListener(new ActionListener() {
@@ -94,10 +110,13 @@ public class UserView extends JFrame {
 		return btnNewButton_1;
 	}
 
+	/** 
+	 * takes in the user ID that the user enters
+	 * @return displays the followings on the list once the button is pressed.
+	 */
 	private JButton followUser() {
 		JButton btnNewButton = new JButton("Follow User");
 		btnNewButton.addActionListener(new ActionListener() {
-			DefaultListModel DLM = new DefaultListModel();
 			public void actionPerformed(ActionEvent arg0) {
 				String input = textField.getText();
 				followers.add(input);
@@ -106,5 +125,31 @@ public class UserView extends JFrame {
 			}
 		});
 		return btnNewButton;
+	}
+}
+
+/**
+ * collects tweets information from UserView and then 
+ * notifies the observers.
+ */
+class EventSource extends Observable implements Runnable {
+	public void run() {
+		while(true) {
+			setChanged();
+			UserView uv = new UserView(null);
+			notifyObservers(uv.getFollowers());
+		}
+	}
+}
+
+/**
+ * updates the news feed.
+ */
+class ResponseHandler implements Observer {
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		if(arg1 instanceof List) {
+			List newsfeed = (List) arg1;
+		}
 	}
 }
