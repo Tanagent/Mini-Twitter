@@ -37,6 +37,9 @@ public class UserView extends JFrame {
 	private List tweets = new ArrayList();
 	private String user;
 	private DefaultListModel DLM = new DefaultListModel();
+	private long time;
+	private List update = new ArrayList();
+	
 
 	/**
 	 * Create the frame for UserView.
@@ -91,10 +94,19 @@ public class UserView extends JFrame {
 	public List getFollowers() {
 		return followers;
 	}
+	
+	public void setUser() {
+		this.user = user;
+	}
+	
+	public String getUser() {
+		return user;
+	}
 
 	/**
 	 * takes in the tweet that the user enters
-	 * @return displays the tweet on the list once the button is pressed.
+	 * @return displays the tweet and the time that it
+	 * was posted onto the list once the button is pressed.
 	 */
 	private JButton submitTweet() {
 		btnNewButton_1 = new JButton("Submit");
@@ -102,12 +114,28 @@ public class UserView extends JFrame {
 			DefaultListModel DLM = new DefaultListModel();
 			public void actionPerformed(ActionEvent arg0) {
 				String input = textField_1.getText();
-				tweets.add(input);
+				time = System.currentTimeMillis();
+				tweets.add(time + " - " + input);
 				DLM.addElement(tweets.get(tweets.size() - 1));
 				list_1.setModel(DLM);
 			}
 		});
 		return btnNewButton_1;
+	}
+	
+	/**
+	 * runs through the array list and gets the last update
+	 * @return returns the user of the last update.
+	 */
+	public String getLastUpdated() {
+		update.add(time);
+		long max = (long) update.get(0);
+		for(long i = 1; i < update.size(); i++)
+			if((long) update.get((int) i) > max)
+				max = (long) update.get((int) i);
+		// calculates the largest number of the arraylist and returns
+		// the current user.
+		return this.user;
 	}
 
 	/** 

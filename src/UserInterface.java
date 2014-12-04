@@ -14,8 +14,13 @@ import javax.swing.JTree;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.JTextField;
 import javax.swing.tree.DefaultTreeModel;
@@ -36,13 +41,14 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 	private Users john, bob, steve, oostu, ppstu2;
 	private JLabel cost;
 	private String user;
+	private DefaultMutableTreeNode troot;
 	private int totalUser;
 	private static UserInterface instance = null;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -109,6 +115,101 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 		txtTextareaGroup.setColumns(10);
 		txtTextareaGroup.setBounds(205, 58, 160, 48);
 		contentPane.add(txtTextareaGroup);
+		
+		JButton btnNewButton_1 = verification();
+		btnNewButton_1.setBounds(205, 184, 321, 28);
+		contentPane.add(btnNewButton_1);
+		
+		lastUpdatedUser();
+	}
+
+	/**
+	 * This button makes another window that ouputs the ID of
+	 * the user who made the last update. 
+	 */
+	private void lastUpdatedUser() {
+		JButton btnNewButton_2 = new JButton("Last Updated User");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				class Display extends JFrame {
+					private JLabel item;
+					public Display() {
+						super("Last Updated User");
+						UserView uv = new UserView(user);
+						setLayout(new FlowLayout());
+						item = new JLabel(uv.getLastUpdated());
+						add(item);
+					}
+				}
+				Display display = new Display();
+				display.setSize(100, 100);
+				display.setVisible(true);
+			}
+		});
+		btnNewButton_2.setBounds(205, 160, 321, 23);
+		contentPane.add(btnNewButton_2);
+	}
+
+	// go here
+	private JButton verification() {
+		JButton btnNewButton_1 = new JButton("User/Group ID verification");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				class Display extends JFrame {
+					private JLabel item;
+					public Display() {
+						super("User/Group ID verification");
+						setLayout(new FlowLayout());
+						Enumeration e = troot.preorderEnumeration();
+						if(checkDuplicate(e) && checkSpace())
+							item = new JLabel("All the IDs have been validated");
+						else if(checkDuplicate(e) && !checkSpace())
+							item = new JLabel("IDs cannot contain spaces.");
+						else if(!checkDuplicate(e) && checkSpace())
+							item = new JLabel("IDs have to be unique");
+						else
+							item = new JLabel("IDs cannot contain spaces and has to be unique");
+						add(item);
+					}
+				}
+				Display display = new Display();
+				display.setSize(300, 200);
+				display.setVisible(true);
+				
+			}
+		});
+		return btnNewButton_1;
+	}
+	
+	/**
+	 * detects duplicates using sets.
+	 * since set doesn't contain duplicates, size must be less
+	 * for a list which contains duplicates.
+	 * @return true if the set is the same as the list, false otherwise.
+	 */
+	private boolean checkDuplicate(Enumeration e) {
+		//Enumeration e = troot.preorderEnumeration();
+		ArrayList list = new ArrayList();
+		Set set = new HashSet(list);
+		while(e.hasMoreElements())
+			list.add(e.nextElement());
+		set.addAll(list);
+		return (set.size() == list.size());
+	}
+	
+	/**
+	 * goes through the list and checks if any word contains a space
+	 * @return true if there aren't any spaces, false otherwise.
+	 */
+	private boolean checkSpace() {
+		Enumeration e = troot.preorderEnumeration();
+		e.nextElement();
+		while(e.hasMoreElements()) {
+			if(e.nextElement().toString().contains(" "))
+				return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -150,7 +251,6 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 	 * @param topDog - the root of Jtree. 
 	 */
 	private void setTree(Users topDog) {
-		DefaultMutableTreeNode troot;
 		troot = new DefaultMutableTreeNode(topDog.getName());
 		tree = new JTree(troot);
 		tree.addTreeSelectionListener((TreeSelectionListener) this);
@@ -159,6 +259,7 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 		
 		tree.setBounds(5, 5, 190, 312);
 		contentPane.add(tree);
+
 	}
 	
 	/**
@@ -184,7 +285,7 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 	    root = new Users("Root");
 	    root.add(john = new Users("John"));
 	    root.add(bob = new Users("Bob"));
-	    root.add(steve = new Users("Stever"));
+	    root.add(steve = new Users("Steven"));
 	    root.add(cs356 = new Users("CS356"));
 
 	    cs356.add(stu1 = new Users("stu1"));
@@ -200,6 +301,7 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 		
 		root.add(oostu = new Users("oostu"));
 		root.add(ppstu2 = new Users("ppstu2"));
+		
 	}
 	
 	/**
@@ -231,6 +333,13 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 	 */
 	private JButton addGroup() {
 		JButton button = new JButton("Add Group");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				UserView asdf = new UserView("Bob");
+				System.out.println(asdf.getFollowers());
+			}
+		});
+
 		return button;
 	}
 	
@@ -261,6 +370,7 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 					public void run() {
 						try {
 							UserView uv = new UserView(user);
+							System.out.println(user + " - " + System.currentTimeMillis());
 							uv.setVisible(true);
 						} catch (Exception e) {
 							e.printStackTrace();
