@@ -150,7 +150,6 @@ public class UserInterface extends JFrame implements TreeSelectionListener {
 		contentPane.add(btnNewButton_2);
 	}
 
-	// go here
 	private JButton verification() {
 		JButton btnNewButton_1 = new JButton("User/Group ID verification");
 		btnNewButton_1.addActionListener(new ActionListener() {
